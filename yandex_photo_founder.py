@@ -21,7 +21,7 @@ service = Service(executable_path=driver_path)
 # Инициализация веб-драйвера с использованием сервиса и опций
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
-def view_images(query, save_folder, counter):
+def view_images(query, save_folder, counter, additional_pass):
     # Создаем папку для сохранения изображений, если она не существует
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
@@ -52,7 +52,7 @@ def view_images(query, save_folder, counter):
     # Листаем изображения
     while True:
         # Пауза, чтобы увидеть текущее изображение
-        time.sleep(3)
+        time.sleep(1)
         
         try:
             print("Ищем блок с изображением...")
@@ -64,8 +64,6 @@ def view_images(query, save_folder, counter):
             # Используем ActionChains для имитации правого клика по изображению
             action = ActionChains(driver)
             action.context_click(image_wrapper).perform()  # Правый клик
-           
-            
 
             # Найти полноразмерное изображение внутри блока
             full_size_img = image_wrapper.find_element(By.CSS_SELECTOR, 'img.MMImage-Origin')
@@ -77,8 +75,13 @@ def view_images(query, save_folder, counter):
 
             print(f"Скачиваем изображение {counter + 1}: {img_url}")
             
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+                'Referer': driver.current_url
+                }
+            
             # Скачиваем изображение
-            img_data = requests.get(img_url).content
+            img_data = requests.get(img_url, headers=headers).content
             # Определяем формат изображения
             img_format = img_url.split('.')[-1].split('?')[0]  # Убираем параметры после "?"
             if img_format.lower() in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tif', 'tiff', 'webp', 'heif', 'heic', 'raw']:
@@ -93,15 +96,22 @@ def view_images(query, save_folder, counter):
                 print(f"Пропущено (неизвестный формат): {img_url}")
 
             # Пауза после скачивания изображения
-            time.sleep(6)  # Даем время, чтобы не перегружать сервер
+            time.sleep(5)  # Даем время, чтобы не перегружать сервер
 
         except Exception as e:
             print(f"Ошибка при поиске полноразмерного изображения: {e}")
         
         # Листаем на следующее изображение
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
+        while additional_pass > 0:
+            driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
+            additional_pass -= 1
+            counter += 1
         # Пауза между прокрутками изображений
-        time.sleep(6)  # Увеличено время ожидания между прокрутками
+        time.sleep(4) 
 
-# Пример использования
-view_images('female pretty face', save_folder='primary_photos', counter=0)  # ваш запрос
+view_images('high quality sexy face', save_folder='primary_photos', counter=229, additional_pass=0 )  # ваш запрос
+
+# female pretty face
+# woman beautiful face
+# high quality sexy face

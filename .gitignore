@@ -1,3 +1,3 @@
-./driver/
-./venv
-./filters_photos
+venv/
+driver/
+filters_photos/

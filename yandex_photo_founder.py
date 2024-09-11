@@ -54,13 +54,16 @@ def view_images(query, save_folder, counter, additional_pass):
     
     # Листаем изображения
     while True:
-        # Пауза, чтобы увидеть текущее изображение
-        time.sleep(1)
-
         while additional_pass > 0:
             driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
             additional_pass -= 1
-            time.sleep(2)
+            time.sleep(1.5)
+        
+        if additional_pass == 0:
+        # Пауза, чтобы увидеть текущее изображение
+            time.sleep(3)
+            additional_pass -= 1
+
 
         try:
             print("Ищем блок с изображением...")
@@ -84,12 +87,13 @@ def view_images(query, save_folder, counter, additional_pass):
             print(f"Скачиваем изображение {counter + 1}: {img_url}")
             
             headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.121 Safari/537.36',
                 'Referer': driver.current_url
                 }
             
             # Скачиваем изображение
-            img_data = requests.get(img_url, headers=headers).content
+            img_data = requests.get(img_url.split('.')[-1].split('?')[0], headers=headers).content
+            
             # Определяем формат изображения
             img_format = img_url.split('.')[-1].split('?')[0]  # Убираем параметры после "?"
             if img_format.lower() in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tif', 'tiff', 'webp', 'heif', 'heic', 'raw']:
@@ -104,7 +108,7 @@ def view_images(query, save_folder, counter, additional_pass):
                 print(f"Пропущено (неизвестный формат): {img_url}")
 
             # Пауза после скачивания изображения
-            time.sleep(5)  # Даем время, чтобы не перегружать сервер
+            time.sleep(6)  # Даем время, чтобы не перегружать сервер
 
         except Exception as e:
             print(f"Ошибка при поиске полноразмерного изображения: {e}")
@@ -113,11 +117,13 @@ def view_images(query, save_folder, counter, additional_pass):
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
        
         # Пауза между прокрутками изображений
-        time.sleep(4) 
+        time.sleep(6) 
 
-view_images('high quality girl face', save_folder='primary_photos', counter=302, additional_pass=100 )  # ваш запрос
+view_images('high quality red hair face', save_folder='primary_photos', counter=371, additional_pass=0 )  # ваш запрос
 
 # female pretty face
 # woman beautiful face
 # high quality sexy face
 # high quality girl face
+# high quality blondie face
+# high quality red face

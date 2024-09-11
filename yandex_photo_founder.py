@@ -92,7 +92,7 @@ def view_images(query, save_folder, counter, additional_pass):
                 }
             
             # Скачиваем изображение
-            img_data = requests.get(img_url.split('.')[-1].split('?')[0], headers=headers).content
+            img_data = requests.get(img_url, headers=headers).content
             
             # Определяем формат изображения
             img_format = img_url.split('.')[-1].split('?')[0]  # Убираем параметры после "?"
@@ -119,11 +119,11 @@ def view_images(query, save_folder, counter, additional_pass):
         # Пауза между прокрутками изображений
         time.sleep(6) 
 
-view_images('high quality red hair face', save_folder='primary_photos', counter=371, additional_pass=0 )  # ваш запрос
+view_images('high quality red hair girl face', save_folder='primary_photos', counter=371, additional_pass=0 )  # ваш запрос
 
 # female pretty face
 # woman beautiful face
 # high quality sexy face
 # high quality girl face
 # high quality blondie face
-# high quality red face
+# high quality red hair girl face

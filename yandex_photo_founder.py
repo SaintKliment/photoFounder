@@ -13,7 +13,10 @@ driver_path = r'C:\Users\kali\Documents\PhotoFounder\PhotoFounder\driver\chromed
 
 # Настройка опций для Chrome
 chrome_options = Options()
-chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")
+chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.121 Safari/537.36")
+chrome_options.add_argument('--ignore-certificate-errors')
+chrome_options.add_argument('--disable-web-security')
+chrome_options.add_argument('--allow-running-insecure-content')
 
 # Создаем сервис для ChromeDriver
 service = Service(executable_path=driver_path)
@@ -106,12 +109,13 @@ def view_images(query, save_folder, counter, additional_pass):
         while additional_pass > 0:
             driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
             additional_pass -= 1
-            counter += 1
+            # counter += 1
         # Пауза между прокрутками изображений
         time.sleep(4) 
 
-view_images('high quality sexy face', save_folder='primary_photos', counter=229, additional_pass=0 )  # ваш запрос
+view_images('high quality girl face', save_folder='primary_photos', counter=302, additional_pass=45 )  # ваш запрос
 
 # female pretty face
 # woman beautiful face
 # high quality sexy face
+# high quality girl face

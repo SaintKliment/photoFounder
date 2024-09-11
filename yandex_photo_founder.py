@@ -92,7 +92,7 @@ def view_images(query, save_folder, counter, additional_pass):
                 }
             
             # Скачиваем изображение
-            img_data = requests.get(img_url, headers=headers).content
+            img_data = requests.get(img_url, headers=headers, timeout=10).content
             
             # Определяем формат изображения
             img_format = img_url.split('.')[-1].split('?')[0]  # Убираем параметры после "?"
@@ -108,7 +108,7 @@ def view_images(query, save_folder, counter, additional_pass):
                 print(f"Пропущено (неизвестный формат): {img_url}")
 
             # Пауза после скачивания изображения
-            time.sleep(6)  # Даем время, чтобы не перегружать сервер
+            time.sleep(3)  # Даем время, чтобы не перегружать сервер
 
         except Exception as e:
             print(f"Ошибка при поиске полноразмерного изображения: {e}")
@@ -117,9 +117,9 @@ def view_images(query, save_folder, counter, additional_pass):
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
        
         # Пауза между прокрутками изображений
-        time.sleep(6) 
+        time.sleep(3) 
 
-view_images('high quality red hair girl face', save_folder='primary_photos', counter=371, additional_pass=0 )  # ваш запрос
+view_images('high quality black hair girl face', save_folder='primary_photos', counter=476, additional_pass=0 )  # ваш запрос
 
 # female pretty face
 # woman beautiful face
@@ -127,3 +127,4 @@ view_images('high quality red hair girl face', save_folder='primary_photos', cou
 # high quality girl face
 # high quality blondie face
 # high quality red hair girl face
+# high quality black hair girl face

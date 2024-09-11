@@ -56,7 +56,12 @@ def view_images(query, save_folder, counter, additional_pass):
     while True:
         # Пауза, чтобы увидеть текущее изображение
         time.sleep(1)
-        
+
+        while additional_pass > 0:
+            driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
+            additional_pass -= 1
+            time.sleep(2)
+
         try:
             print("Ищем блок с изображением...")
             
@@ -106,14 +111,11 @@ def view_images(query, save_folder, counter, additional_pass):
         
         # Листаем на следующее изображение
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
-        while additional_pass > 0:
-            driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
-            additional_pass -= 1
-            # counter += 1
+       
         # Пауза между прокрутками изображений
         time.sleep(4) 
 
-view_images('high quality girl face', save_folder='primary_photos', counter=302, additional_pass=45 )  # ваш запрос
+view_images('high quality girl face', save_folder='primary_photos', counter=302, additional_pass=100 )  # ваш запрос
 
 # female pretty face
 # woman beautiful face

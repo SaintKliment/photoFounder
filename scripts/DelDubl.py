@@ -33,5 +33,5 @@ def remove_duplicate_images(folder_path):
                 print(f"Не удалось обработать файл {file_path}: {e}")
 
 # Пример использования
-folder_with_images = '../primary_photos'
+folder_with_images = './primary_photos'
 remove_duplicate_images(folder_with_images)

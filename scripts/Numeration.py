@@ -24,7 +24,7 @@ def rename_files_in_directory(directory):
         print(f"Переименован: {filename} -> {new_name}")
 
 # Укажите путь к вашей папке
-folder_path = '../filters_photos'
+folder_path = './filters_photos'
 
 # Запуск функции переименования
 rename_files_in_directory(folder_path)

@@ -21,7 +21,7 @@ def clear_folder(folder_path):
     print(f"Папка {folder_path} успешно очищена.")
 
 # Путь к папке, которую нужно очистить
-folder_to_clear = './filters_photos'
+folder_to_clear = './primary_photos'
 
 # Очищаем папку
 clear_folder(folder_to_clear)

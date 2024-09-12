@@ -119,12 +119,4 @@ def view_images(query, save_folder, counter, additional_pass):
         # Пауза между прокрутками изображений
         time.sleep(3) 
 
-view_images('high quality black hair girl face', save_folder='primary_photos', counter=476, additional_pass=0 )  # ваш запрос
-
-# female pretty face
-# woman beautiful face
-# high quality sexy face
-# high quality girl face
-# high quality blondie face
-# high quality red hair girl face
-# high quality black hair girl face
+view_images('high quality stunning female face', save_folder='primary_photos', counter=912, additional_pass=0 )  # ваш запрос

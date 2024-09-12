@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 # Папка с изображениями
-input_folder = './primary_photos'
+input_folder = '../filters_photos'
 
 # Удаление изображений с низкой насыщенностью (серые) или мультяшным цветокором
 def remove_unwanted_images(image_path):
@@ -39,6 +39,6 @@ def remove_unwanted_images(image_path):
 
 # Проход по всем изображениям в папке
 for filename in os.listdir(input_folder):
-    if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+    if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
         image_path = os.path.join(input_folder, filename)
         remove_unwanted_images(image_path)

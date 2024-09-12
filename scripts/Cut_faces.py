@@ -7,15 +7,15 @@ mp_face_detection = mp.solutions.face_detection
 mp_drawing = mp.solutions.drawing_utils
 
 # Путь к папке с изображениями
-input_folder = './primary_photos'
-output_folder = './filters_photos'
+input_folder = '../primary_photos'
+output_folder = '../filters_photos'
 
 # Создание выходной папки, если она не существует
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
 # Функция для вырезания лица и захвата волос
-def crop_faces(image_path, output_path, margin=0.2):
+def crop_faces(image_path, output_path, margin=1):  # Увеличен margin для захвата волос
     image = cv2.imread(image_path)
     
     if image is None:
@@ -59,7 +59,7 @@ def crop_faces(image_path, output_path, margin=0.2):
 
 # Проход по папке с изображениями
 for filename in os.listdir(input_folder):
-    if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+    if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
         image_path = os.path.join(input_folder, filename)
         output_path = os.path.join(output_folder, filename)
         

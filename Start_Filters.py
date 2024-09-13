@@ -25,7 +25,7 @@ def run_python_scripts(scripts):
 scripts_to_run = [
     './scripts/DelDubl.py',
     './scripts/Cut_faces.py',
-    './scripts/DelBadColor.py',
+    #'./scripts/DelBadColor.py',
     './scripts/Numeration.py'
 ]
 

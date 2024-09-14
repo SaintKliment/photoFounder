@@ -24,10 +24,13 @@ service = Service(executable_path=driver_path)
 # Инициализация веб-драйвера с использованием сервиса и опций
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
+prev_img_url = None  # Инициализируем переменную для хранения предыдущего img_url
+
 def view_images(query, save_folder, counter, additional_pass, photos_to_download):
+    global prev_img_url  # Используем глобальную переменную для сохранения предыдущего URL
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
-    
+
     search_url = f"https://yandex.ru/images/search?text={query}"
     driver.get(search_url)
     if counter == 0:
@@ -41,14 +44,14 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
     driver.switch_to.window(driver.window_handles[-1])
 
     downloaded = 0  # Счетчик загруженных изображений
-    
+
     while downloaded < photos_to_download:
         if counter == 0:
             while additional_pass > 0:
                 driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
                 additional_pass -= 1
                 time.sleep(1.5)
-        
+
         if additional_pass == 0:
             time.sleep(3)
             additional_pass -= 1
@@ -65,11 +68,18 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
             if img_url.startswith('//'):
                 img_url = 'https:' + img_url
 
+            # Проверка на повторное изображение
+            if img_url == prev_img_url:
+                print(f"Пропущено (повторное изображение): {img_url}")
+                break  # Прерываем цикл и переходим к следующему запросу
+
+            prev_img_url = img_url  # Сохраняем текущий URL как предыдущий
+
             print(f"Скачиваем изображение {counter + 1}: {img_url}")
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.121 Safari/537.36',
                 'Referer': driver.current_url
-                }
+            }
             img_data = requests.get(img_url, headers=headers, timeout=10).content
             img_format = img_url.split('.')[-1].split('?')[0]
 
@@ -87,7 +97,7 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
 
         except Exception as e:
             print(f"Ошибка при поиске полноразмерного изображения: {e}")
-        
+
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
         time.sleep(3)
 
@@ -131,5 +141,5 @@ def process_file(file_path, save_folder, photos_to_download):
 # Запуск процесса
 file_path = './quaries/quaries5.txt'
 save_folder = 'primary_photos'
-photos_to_download = 500  # Указываем количество фотографий для скачивания на один запрос
+photos_to_download = 750  # Указываем количество фотографий для скачивания на один запрос
 process_file(file_path, save_folder, photos_to_download)

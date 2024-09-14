@@ -12,9 +12,9 @@ def replace_word_in_file(file_path, old_word, new_word):
         file.write(updated_content)
 
 # Укажите путь к вашему файлу
-file_path = './quaries/quaries5.txt'
+file_path = './quaries/quaries2.txt'
 # Указываем старое и новое слово
-old_word = '0'
+old_word = 'Side '
 new_word = ''
 
 replace_word_in_file(file_path, old_word, new_word)

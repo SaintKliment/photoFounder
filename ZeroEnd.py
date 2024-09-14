@@ -11,5 +11,5 @@ def append_zero_to_lines(file_path):
         file.writelines(updated_lines)
 
 # Укажите путь к вашему файлу
-file_path = './quaries/quaries5.txt'
+file_path = './quaries/quaries.txt'
 append_zero_to_lines(file_path)

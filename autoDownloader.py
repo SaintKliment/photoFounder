@@ -130,5 +130,5 @@ def process_file(file_path, save_folder, photos_to_download):
 # Запуск процесса
 file_path = './quaries/quaries5.txt'
 save_folder = 'primary_photos'
-photos_to_download = 250  # Указываем количество фотографий для скачивания на один запрос
+photos_to_download = 500  # Указываем количество фотографий для скачивания на один запрос
 process_file(file_path, save_folder, photos_to_download)

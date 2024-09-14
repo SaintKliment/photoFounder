@@ -1,11 +1,11 @@
-profile of a girl's face 0
-portrait of a girl 0
-profile of a girl 0
-face of a girl in full view 0
-profile of a girl with long hair 0
-profile of a girl with short hair 0
-portrait of a girl with straight hair 0
-profile of a girl with wavy hair 0
+profile of a girl's face 1
+portrait of a girl 1
+profile of a girl 1
+face of a girl in full view 1
+profile of a girl with long hair 1
+profile of a girl with short hair 1
+portrait of a girl with straight hair 1
+profile of a girl with wavy hair 1
 face of a young woman 0
 portrait of a girl with bangs 0
 profile of a girl focusing on hairstyle 0

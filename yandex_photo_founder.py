@@ -119,4 +119,4 @@ def view_images(query, save_folder, counter, additional_pass):
         # Пауза между прокрутками изображений
         time.sleep(3) 
 
-view_images('Beautiful young girl with fair skin and triangle-shaped head ', save_folder='primary_photos', counter=2909, additional_pass=0 )  # ваш запрос
+view_images('Beautiful young girl with fair skin and triangle-shaped head', save_folder='primary_photos', counter=0, additional_pass=0 )  # ваш запрос

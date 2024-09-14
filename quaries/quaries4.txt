@@ -1,11 +1,10 @@
-По национальностям: 0
-Asian girl face 0
-European girl face 0
-African girl face 0
-Latina girl face 0
-Middle Eastern girl face 0
-Indian girl face 0
-Japanese girl face 0
+Asian girl face 1
+European girl face 1
+African girl face 1
+Latina girl face 1
+Middle Eastern girl face 1
+Indian girl face 1
+Japanese girl face 1
 Korean girl face 0
 Chinese girl face 0
 Russian girl face 0

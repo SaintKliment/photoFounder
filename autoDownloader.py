@@ -43,10 +43,11 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
     downloaded = 0  # Счетчик загруженных изображений
     
     while downloaded < photos_to_download:
-        while additional_pass > 0:
-            driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
-            additional_pass -= 1
-            time.sleep(1.5)
+        if counter == 0:
+            while additional_pass > 0:
+                driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
+                additional_pass -= 1
+                time.sleep(1.5)
         
         if additional_pass == 0:
             time.sleep(3)

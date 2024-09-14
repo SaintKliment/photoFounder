@@ -1,15 +1,9 @@
-portrait of a Japanese girl 0
-profile of a Korean girl's face 0
-portrait of a Chinese girl 0
-profile of a Vietnamese girl's face 0
-portrait of a Thai girl 0
-profile of an Indian girl's face 0
-portrait of a Pakistani girl 0
-profile of an Arab girl's face 0
-portrait of a Turkish girl 0
-profile of an Iranian girl's face 0
-portrait of an Armenian girl 0
-profile of a Georgian girl's face 0
+portrait of a Japanese girl 1
+profile of a Korean girl's face 1
+portrait of a Chinese girl 1
+profile of a Vietnamese girl's face 1
+portrait of a Thai girl 1
+profile of an Indian girl's face 1
 portrait of a Belarusian girl 0
 profile of a Ukrainian girl's face 0
 portrait of a Russian girl 0

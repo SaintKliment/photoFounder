@@ -13,7 +13,7 @@ def rename_files_in_directory(directory, start_index=1):
         file_extension = os.path.splitext(filename)[1]
         
         # Создаем новое имя файла
-        new_name = f"img_{i}{file_extension}"
+        new_name = f"photo_{i}{file_extension}"
         
         # Полные пути для оригинального и нового имени
         old_path = os.path.join(directory, filename)

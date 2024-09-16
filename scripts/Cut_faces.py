@@ -7,8 +7,8 @@ mp_face_detection = mp.solutions.face_detection
 mp_drawing = mp.solutions.drawing_utils
 
 # Путь к папке с изображениями
-input_folder = './primary_photos'
-output_folder = './filters_photos'
+input_folder = './workspace_photos/primary_photos'
+output_folder = './workspace_photos/filters_photos'
 
 # Создание выходной папки, если она не существует
 if not os.path.exists(output_folder):

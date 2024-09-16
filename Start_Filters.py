@@ -24,6 +24,8 @@ def run_python_scripts(scripts):
 # Список скриптов для запуска
 scripts_to_run = [
     './scripts/DelDubl.py',
+    './scripts/DelBadResolution.py',
+    './scripts/DelBadSize.py',
     './scripts/Cut_faces.py',
     #'./scripts/DelBadColor.py',
     './scripts/Numeration.py'

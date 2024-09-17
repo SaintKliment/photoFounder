@@ -10,8 +10,10 @@ import requests
 import os
 from PIL import Image
 from io import BytesIO
+from selenium.webdriver.common.action_chains import ActionChains
 
-# Путь к вашему веб-драйверу
+
+# Путь к веб-драйверу
 driver_path = r'C:\Users\kali\Documents\PhotoFounder\PhotoFounder\driver\chromedriver.exe'
 
 # Настройка опций для Chrome
@@ -21,6 +23,7 @@ chrome_options.add_argument('--ignore-certificate-errors')  # Игнориров
 chrome_options.add_argument('--disable-web-security')  # Отключение безопасности веб-страниц
 chrome_options.add_argument('--allow-running-insecure-content')  # Разрешение небезопасного контента
 chrome_options.add_argument('--disable-gpu')  # Отключение GPU (иногда помогает с ошибками)
+chrome_options.add_argument('--user-data-dir=/path/to/your/custom/profile')
 
 # Создаем сервис для ChromeDriver
 service = Service(executable_path=driver_path)
@@ -51,7 +54,7 @@ try:
     )
     
     # Ввод текста в поле поиска
-    query = "high resolution female face"  # Здесь нужно подставить ваш запрос
+    query = "women beautiful face HD"  # Здесь нужно подставить запрос
     search_box.send_keys(query)
     search_box.send_keys(Keys.RETURN)
     print(f"Поиск выполнен для запроса: {query}")
@@ -80,7 +83,7 @@ def download_image(img_url, save_path, index):
         if response.status_code == 200:
             image = Image.open(BytesIO(response.content))
             width, height = image.size
-            if width > 150 and height > 150: #  укажите минимально допустимые размеры
+            if width > 512 and height > 512:  # укажите минимально допустимые размеры
                 with open(img_path, 'wb') as file:
                     file.write(response.content)
                 print(f"Изображение сохранено как {img_path}")
@@ -90,6 +93,14 @@ def download_image(img_url, save_path, index):
             print(f"Не удалось скачать изображение. Статус код: {response.status_code}")
     except Exception as e:
         print(f"Ошибка при скачивании изображения: {e}")
+
+# Функция для получения последнего URL из srcset
+def get_last_srcset_url(srcset):
+    if not srcset:
+        return None
+    urls = srcset.split(',')
+    last_url = urls[-1].strip().split(' ')[0]
+    return last_url
 
 # Пролистывание страницы и скачивание изображений
 def scroll_and_download_images():
@@ -104,10 +115,38 @@ def scroll_and_download_images():
         # Скачать каждое изображение
         for img_element in img_elements:
             try:
-                # Получаем URL изображения
-                img_url = img_element.get_attribute('src')
-                if img_url:
-                    download_image(img_url, save_path, counter)
+                # Найти родительский div элемента img
+                parent_div = img_element.find_element(By.XPATH, '..')
+                
+                # Выполнить правый клик по родительскому div
+                right_click_on_element(parent_div)
+                
+                # Получаем URL изображения и srcset
+                img_src = img_element.get_attribute('src')
+                img_srcset = img_element.get_attribute('srcset')
+                
+                # Извлекаем последний URL из srcset
+                last_srcset_url = get_last_srcset_url(img_srcset)
+                
+                # Выводим значения в консоль
+                print(f"src: {img_src}")
+                print(f"srcset: {img_srcset}")
+                print(f"Последний URL из srcset: {last_srcset_url}")
+                
+               
+                # Модифицируем img_src для получения оригинального изображения
+                img_src_parts = img_src.split('/')  # Разделяем URL на части
+                
+                # Изменяем структуру URL
+                modified_img_src = f"https://i.pinimg.com/originals/{img_src_parts[3]}/{img_src_parts[4]}/{img_src_parts[-1]}"
+                print(f"modified_img_src: {modified_img_src}")
+
+                # Если последний URL из srcset существует, скачиваем его
+                if last_srcset_url:
+                    download_image(last_srcset_url, save_path, counter)
+                    counter += 1
+                elif modified_img_src: #img_src:
+                    download_image(modified_img_src, save_path, counter)
                     counter += 1
             except Exception as e:
                 print(f"Ошибка при скачивании изображения: {e}")
@@ -115,6 +154,15 @@ def scroll_and_download_images():
         # Прокрутка страницы вниз для загрузки новых изображений
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(5)  # Подождем, пока загрузятся новые изображения
+
+def right_click_on_element(element):
+    try:
+        actions = ActionChains(driver)
+        actions.context_click(element).perform()  # Выполняем правый клик
+        print("Правый клик выполнен.")
+    except Exception as e:
+        print(f"Ошибка при выполнении правого клика: {e}")
+
 
 # Запуск функции для пролистывания страницы и скачивания изображений
 scroll_and_download_images()

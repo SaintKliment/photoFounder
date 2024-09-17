@@ -26,8 +26,8 @@ for filename in os.listdir(folder_path):
                 # Удаляем изображение, если его размер <= 500x500
                 os.remove(file_path)
                 print(f"Удалено: {filename} (Размер: {width}x{height})")
-            # else:
-                # print(f"Оставлено: {filename} (Размер: {width}x{height})")
+            else:
+                print(f"Оставлено: {filename} (Размер: {width}x{height})")
 
     except (IOError, SyntaxError) as e:
         # Удаляем файл, если возникла ошибка открытия или проверка изображения не прошла

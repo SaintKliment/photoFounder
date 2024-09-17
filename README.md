@@ -1,1 +1,1 @@
-you need to install chrome driver
+you need to install chrome driver and venv

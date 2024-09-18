@@ -46,36 +46,33 @@ except Exception as e:
 # Подождем немного, чтобы страница обновилась
 time.sleep(5)
 
-# Ввод текста в поле поиска
-try:
-    # Ожидание появления поля поиска
-    search_box = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, 'input[data-test-id="search-box-input"]'))
-    )
-    
+def search_query(query):
     # Ввод текста в поле поиска
-    query = "women beautiful face HD"  # Здесь нужно подставить запрос
-    search_box.send_keys(query)
-    search_box.send_keys(Keys.RETURN)
-    print(f"Поиск выполнен для запроса: {query}")
-except Exception as e:
-    print(f"Ошибка при вводе текста в поле поиска: {e}")
+    try:
+        # Ожидание появления поля поиска
+        search_box = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[data-test-id="search-box-input"]'))
+        )
 
-# Подождем, пока результаты поиска загрузятся
-time.sleep(5)
+        # Ввод текста в поле поиска
+        search_box.send_keys(query)
+        search_box.send_keys(Keys.RETURN)
+        print(f"Поиск выполнен для запроса: {query}")
+    except Exception as e:
+        print(f"Ошибка при вводе текста в поле поиска: {e}")
 
-# Создание папки для сохранения фотографий
-save_path = './workspace_photos/primary_photos'
-os.makedirs(save_path, exist_ok=True)
+    # Подождем, пока результаты поиска загрузятся
+    time.sleep(5)
 
-# Счётчик для имени файлов
+# Инициализируем счетчик вне функции
 counter = 1
 
 # Функция для скачивания изображений
-def download_image(img_url, save_path, index):
+def download_image(img_url, save_path):
+    global counter  # будем использовать глобальную переменную counter
     try:
         # Определяем имя файла
-        img_name = f"img_{index}.jpg"
+        img_name = f"img_{counter}.jpg"
         img_path = os.path.join(save_path, img_name)
         
         # Скачиваем изображение
@@ -87,6 +84,7 @@ def download_image(img_url, save_path, index):
                 with open(img_path, 'wb') as file:
                     file.write(response.content)
                 print(f"Изображение сохранено как {img_path}")
+                counter += 1
             else:
                 print(f"Изображение {img_url} пропущено, так как его размер меньше нужных пикселей.")
         else:
@@ -94,17 +92,8 @@ def download_image(img_url, save_path, index):
     except Exception as e:
         print(f"Ошибка при скачивании изображения: {e}")
 
-# Функция для получения последнего URL из srcset
-def get_last_srcset_url(srcset):
-    if not srcset:
-        return None
-    urls = srcset.split(',')
-    last_url = urls[-1].strip().split(' ')[0]
-    return last_url
-
 # Пролистывание страницы и скачивание изображений
 def scroll_and_download_images():
-    global counter
     while True:
         # Найти все изображения на странице
         img_elements = driver.find_elements(By.XPATH, '//div[contains(@class, "XiG") and contains(@class, "zI7") and contains(@class, "iyn") and contains(@class, "Hsu")]/img')
@@ -115,54 +104,32 @@ def scroll_and_download_images():
         # Скачать каждое изображение
         for img_element in img_elements:
             try:
-                # Найти родительский div элемента img
-                parent_div = img_element.find_element(By.XPATH, '..')
-                
-                # Выполнить правый клик по родительскому div
-                right_click_on_element(parent_div)
-                
                 # Получаем URL изображения и srcset
                 img_src = img_element.get_attribute('src')
-                img_srcset = img_element.get_attribute('srcset')
-                
-                # Извлекаем последний URL из srcset
-                last_srcset_url = get_last_srcset_url(img_srcset)
-                
-                # Выводим значения в консоль
-                print(f"src: {img_src}")
-                print(f"srcset: {img_srcset}")
-                print(f"Последний URL из srcset: {last_srcset_url}")
-                
                
                 # Модифицируем img_src для получения оригинального изображения
                 img_src_parts = img_src.split('/')  # Разделяем URL на части
                 
                 # Изменяем структуру URL
-                modified_img_src = f"https://i.pinimg.com/originals/{img_src_parts[3]}/{img_src_parts[4]}/{img_src_parts[-1]}"
-                print(f"modified_img_src: {modified_img_src}")
-
-                # Если последний URL из srcset существует, скачиваем его
-                if last_srcset_url:
-                    download_image(last_srcset_url, save_path, counter)
-                    counter += 1
-                elif modified_img_src: #img_src:
-                    download_image(modified_img_src, save_path, counter)
-                    counter += 1
+                modified_img_src = f"https://i.pinimg.com/originals/{img_src_parts[4]}/{img_src_parts[5]}/{img_src_parts[6]}/{img_src_parts[-1]}"
+                
+                if modified_img_src:
+                    print(modified_img_src)
+                    download_image(modified_img_src, save_path)
+                    time.sleep(5)
             except Exception as e:
                 print(f"Ошибка при скачивании изображения: {e}")
         
         # Прокрутка страницы вниз для загрузки новых изображений
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(5)  # Подождем, пока загрузятся новые изображения
+        time.sleep(2.5)  # Подождем, пока загрузятся новые изображения
 
-def right_click_on_element(element):
-    try:
-        actions = ActionChains(driver)
-        actions.context_click(element).perform()  # Выполняем правый клик
-        print("Правый клик выполнен.")
-    except Exception as e:
-        print(f"Ошибка при выполнении правого клика: {e}")
 
+search_query("pretty face HD")
+
+# Создание папки для сохранения фотографий
+save_path = './workspace_photos/primary_photos'
+os.makedirs(save_path, exist_ok=True)
 
 # Запуск функции для пролистывания страницы и скачивания изображений
 scroll_and_download_images()

@@ -28,7 +28,7 @@ scripts_to_run = [
     './scripts/DelBadSize.py',
     #'./scripts/Cut_faces.py',
     #'./scripts/DelBadColor.py',
-    './scripts/Numeration.py'
+    #'./scripts/Numeration.py'
 ]
 
 # Запуск скриптов

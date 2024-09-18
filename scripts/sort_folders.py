@@ -6,7 +6,7 @@ def distribute_files(source_folder, dest_folder, files_per_folder=1000):
     files = [f for f in os.listdir(source_folder) if os.path.isfile(os.path.join(source_folder, f))]
     
     # Счетчик для номеров папок
-    folder_count = 15
+    folder_count = 0
     file_count = 0
 
     # Создаем папки и перемещаем файлы

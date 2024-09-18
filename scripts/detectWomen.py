@@ -20,28 +20,24 @@ def analyze_gender(image_path):
     except Exception as e:
         print(f"Ошибка при анализе {image_path}: {e}")
         return 'Unknown'
-
+    
 def process_images(input_folder):
-    results = []
     for img_name in os.listdir(input_folder):
         if img_name.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp')):
             img_path = os.path.join(input_folder, img_name)
             gender = analyze_gender(img_path)
-            results.append((img_name, gender))
-    
-    return results
+
+        woman_prob = gender.get('Woman', 0)
+        # man_prob = gender.get('Man', 0)
+        
+        if woman_prob > 9:
+            src_path = os.path.join(input_folder, img_name)
+            dest_path = os.path.join(output_folder, img_name)
+            shutil.move(src_path, dest_path)  # Перемещение файла
+            print(f"Изображение {img_name} перемещено в папку: {output_folder}")
+
 
 # Пример использования
 output_folder = './workspace_photos/filters_photos'
-input_folder = './workspace_photos/primary_photos'
-results = process_images(input_folder)
-
-# Вывод результатов
-for img_name, gender_probs in results:
-    woman_prob = gender_probs.get('Woman', 0)
-    man_prob = gender_probs.get('Man', 0)
-    if woman_prob > man_prob:
-        src_path = os.path.join(input_folder, img_name)
-        dest_path = os.path.join(output_folder, img_name)
-        shutil.move(src_path, dest_path)  # Перемещение файла
-        print(f"Изображение {img_name} перемещено в папку: {output_folder}")
+input_folder = './workspace_photos/06000'
+process_images(input_folder)

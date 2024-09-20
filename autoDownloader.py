@@ -7,6 +7,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from PIL import Image
+from io import BytesIO
 
 # Путь к веб-драйверу
 driver_path = r'C:\Users\kali\Documents\PhotoFounder\PhotoFounder\driver\chromedriver.exe'
@@ -75,24 +77,33 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
 
             prev_img_url = img_url  # Сохраняем текущий URL как предыдущий
 
-            print(f"Скачиваем изображение {counter + 1}: {img_url}")
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.121 Safari/537.36',
-                'Referer': driver.current_url
-            }
-            img_data = requests.get(img_url, headers=headers, timeout=10).content
-            img_format = img_url.split('.')[-1].split('?')[0]
+            # Получаем данные изображения
+            img_data = requests.get(img_url).content
+            img = Image.open(BytesIO(img_data))
+            width, height = img.size
 
-            if img_format.lower() in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tif', 'tiff', 'webp', 'heif', 'heic', 'raw']:
-                img_name = f"image_{counter + 1}.{img_format}"
-                img_path = os.path.join(save_folder, img_name)
-                with open(img_path, 'wb') as img_file:
-                    img_file.write(img_data)
-                print(f"Сохранено: {img_name}")
-                counter += 1
-                downloaded += 1  # Увеличиваем количество загруженных изображений
+            # Проверяем размеры изображения
+            if width >= 1000 and height >= 1000:
+                print(f"Скачиваем изображение {counter + 1}: {img_url}")
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.121 Safari/537.36',
+                    'Referer': driver.current_url
+                }
+                img_format = img_url.split('.')[-1].split('?')[0]
+
+                if img_format.lower() in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tif', 'tiff', 'webp', 'heif', 'heic', 'raw']:
+                    img_name = f"image_{counter + 1}.{img_format}"
+                    img_path = os.path.join(save_folder, img_name)
+                    with open(img_path, 'wb') as img_file:
+                        img_file.write(img_data)
+                    print(f"Сохранено: {img_name}")
+                    counter += 1
+                    downloaded += 1  # Увеличиваем количество загруженных изображений
+                else:
+                    print(f"Пропущено (неизвестный формат): {img_url}")
             else:
-                print(f"Пропущено (неизвестный формат): {img_url}")
+                print(f"Пропущено (размер меньше 1000x1000): {img_url}")
+
             time.sleep(3)
 
         except Exception as e:
@@ -140,6 +151,6 @@ def process_file(file_path, save_folder, photos_to_download):
 
 # Запуск процесса
 file_path = './quaries/quaries5.txt'
-save_folder = 'primary_photos'
+save_folder = './workspace_photos/primary_photos'
 photos_to_download = 750  # Указываем количество фотографий для скачивания на один запрос
 process_file(file_path, save_folder, photos_to_download)

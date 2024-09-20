@@ -65,7 +65,7 @@ def search_query(query):
     time.sleep(5)
 
 # Инициализируем счетчик вне функции
-counter = 1
+counter = 8
 
 # Функция для скачивания изображений
 def download_image(img_url, save_path):
@@ -80,7 +80,7 @@ def download_image(img_url, save_path):
         if response.status_code == 200:
             image = Image.open(BytesIO(response.content))
             width, height = image.size
-            if width > 512 and height > 512:  # укажите минимально допустимые размеры
+            if width >= 1024 and height >= 1024:  # укажите минимально допустимые размеры
                 with open(img_path, 'wb') as file:
                     file.write(response.content)
                 print(f"Изображение сохранено как {img_path}")
@@ -93,7 +93,10 @@ def download_image(img_url, save_path):
         print(f"Ошибка при скачивании изображения: {e}")
 
 # Пролистывание страницы и скачивание изображений
-def scroll_and_download_images():
+# Пролистывание страницы и скачивание изображений с плавным скроллингом
+def smooth_scroll_and_download_images(scroll_pause_time=2, scroll_step=300):
+    last_height = driver.execute_script("return document.body.scrollHeight")
+
     while True:
         # Найти все изображения на странице
         img_elements = driver.find_elements(By.XPATH, '//div[contains(@class, "XiG") and contains(@class, "zI7") and contains(@class, "iyn") and contains(@class, "Hsu")]/img')
@@ -104,35 +107,59 @@ def scroll_and_download_images():
         # Скачать каждое изображение
         for img_element in img_elements:
             try:
-                # Получаем URL изображения и srcset
+                # Получаем URL изображения
                 img_src = img_element.get_attribute('src')
-               
-                # Модифицируем img_src для получения оригинального изображения
-                img_src_parts = img_src.split('/')  # Разделяем URL на части
                 
-                # Изменяем структуру URL
-                modified_img_src = f"https://i.pinimg.com/originals/{img_src_parts[4]}/{img_src_parts[5]}/{img_src_parts[6]}/{img_src_parts[-1]}"
+                # Модифицируем img_src для получения оригинального изображения
+                img_src_parts = img_src.split('/')
+                modified_img_src = f"https://i.pinimg.com/originals/{'/'.join(img_src_parts[4:7])}/{img_src_parts[-1]}"
+                modified_img_src_parts = modified_img_src.split('/')
+                spec_modified_img = '/'.join(modified_img_src_parts[4:])
                 
                 if modified_img_src:
-                    print(modified_img_src)
-                    download_image(modified_img_src, save_path)
+                    if isUniquePhoto(modified_img_src):
+                        download_image(modified_img_src, save_path)
+                        addToDownloads(spec_modified_img)
+                    else:
+                        print("Duplicate image detected, skipping.")
                     time.sleep(5)
             except Exception as e:
                 print(f"Ошибка при скачивании изображения: {e}")
         
-        # Прокрутка страницы вниз для загрузки новых изображений
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(2.5)  # Подождем, пока загрузятся новые изображения
+        # Прокрутка страницы вниз небольшими шагами
+        for i in range(0, last_height, scroll_step):
+            driver.execute_script(f"window.scrollBy(0, {scroll_step});")
+            time.sleep(0.1)  # Пауза для плавности скролла
 
+        # Ждем, пока страница подгрузит новые изображения
+        time.sleep(scroll_pause_time)
+        
+        # Проверка изменения высоты страницы
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            print("Достигнут конец страницы, больше изображений не подгружается.")
+            break
+        last_height = new_height
 
-search_query("pretty face HD")
+downloads_links = []
+def addToDownloads(modified_img_src):
+    global downloads_links
+    downloads_links.append(modified_img_src)
+
+def isUniquePhoto(spec_modified_img):
+    for i in downloads_links:
+        if i == spec_modified_img:
+            return False
+    return True
+
+search_query("pretty face")
 
 # Создание папки для сохранения фотографий
 save_path = './workspace_photos/primary_photos'
 os.makedirs(save_path, exist_ok=True)
 
 # Запуск функции для пролистывания страницы и скачивания изображений
-scroll_and_download_images()
+smooth_scroll_and_download_images()
 
 # Пауза, чтобы увидеть результат (опционально)
 input("Нажмите Enter для закрытия браузера...")

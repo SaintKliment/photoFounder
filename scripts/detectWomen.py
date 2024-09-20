@@ -39,5 +39,5 @@ def process_images(input_folder):
 
 # Пример использования
 output_folder = './workspace_photos/filters_photos'
-input_folder = './workspace_photos/06000'
+input_folder = './workspace_photos/09000'
 process_images(input_folder)

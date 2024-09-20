@@ -65,10 +65,10 @@ def search_query(query):
     time.sleep(5)
 
 # Инициализируем счетчик вне функции
-counter = 8
+counter = 1
 
 # Функция для скачивания изображений
-def download_image(img_url, save_path):
+def download_image(img_url, save_path, spec_modified_img):
     global counter  # будем использовать глобальную переменную counter
     try:
         # Определяем имя файла
@@ -81,12 +81,13 @@ def download_image(img_url, save_path):
             image = Image.open(BytesIO(response.content))
             width, height = image.size
             if width >= 1024 and height >= 1024:  # укажите минимально допустимые размеры
+                addToDownloads(spec_modified_img)
                 with open(img_path, 'wb') as file:
                     file.write(response.content)
                 print(f"Изображение сохранено как {img_path}")
                 counter += 1
             else:
-                print(f"Изображение {img_url} пропущено, так как его размер меньше нужных пикселей.")
+                print(f"Изображение {img_url} пропущено, так как его размер не подходит.")
         else:
             print(f"Не удалось скачать изображение. Статус код: {response.status_code}")
     except Exception as e:
@@ -115,14 +116,12 @@ def smooth_scroll_and_download_images(scroll_pause_time=2, scroll_step=300):
                 modified_img_src = f"https://i.pinimg.com/originals/{'/'.join(img_src_parts[4:7])}/{img_src_parts[-1]}"
                 modified_img_src_parts = modified_img_src.split('/')
                 spec_modified_img = '/'.join(modified_img_src_parts[4:])
-                
-                if modified_img_src:
-                    if isUniquePhoto(modified_img_src):
-                        download_image(modified_img_src, save_path)
-                        addToDownloads(spec_modified_img)
-                    else:
-                        print("Duplicate image detected, skipping.")
-                    time.sleep(5)
+
+                if isUniquePhoto(spec_modified_img) == True:
+                    download_image(modified_img_src, save_path, spec_modified_img)
+                else:
+                    print("Duplicate image detected, skipping.")
+                time.sleep(5)
             except Exception as e:
                 print(f"Ошибка при скачивании изображения: {e}")
         
@@ -145,6 +144,9 @@ downloads_links = []
 def addToDownloads(modified_img_src):
     global downloads_links
     downloads_links.append(modified_img_src)
+    if len(downloads_links) > 50:
+        # Удаляем первые 10 элементов
+        del downloads_links[:10]
 
 def isUniquePhoto(spec_modified_img):
     for i in downloads_links:

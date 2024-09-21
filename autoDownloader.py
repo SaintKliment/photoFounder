@@ -35,7 +35,7 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
 
-    search_url = f"https://yandex.ru/images/search?text={query}&size=large&"
+    search_url = f"https://yandex.ru/images/search?text={query}&size=large"
     driver.get(search_url)
     if counter == 0:
         input("Пройдите капчу и нажмите Enter для продолжения...\n")

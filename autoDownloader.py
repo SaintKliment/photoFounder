@@ -6,7 +6,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from PIL import Image
 from io import BytesIO
 
@@ -16,9 +17,10 @@ driver_path = r'C:\Users\kali\Documents\PhotoFounder\PhotoFounder\driver\chromed
 # Настройка опций для Chrome
 chrome_options = Options()
 chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.121 Safari/537.36")
-chrome_options.add_argument('--ignore-certificate-errors')
-chrome_options.add_argument('--disable-web-security')
-chrome_options.add_argument('--allow-running-insecure-content')
+chrome_options.add_argument('--ssl-protocol=any')
+chrome_options.add_argument('--disable-ssl-encryption')
+chrome_options.add_argument('--no-sandbox')
+
 
 # Создаем сервис для ChromeDriver
 service = Service(executable_path=driver_path)
@@ -59,55 +61,46 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
             additional_pass -= 1
 
         try:
-            print("Ищем блок с изображением...")
-            image_wrapper = driver.find_element(By.CSS_SELECTOR, 'div.SwipeImage.MMImageWrapper')
-            print("Блок с изображением найден.")
-            action = ActionChains(driver)
-            action.context_click(image_wrapper).perform()
-            full_size_img = image_wrapper.find_element(By.CSS_SELECTOR, 'img.MMImage-Origin')
-            img_url = full_size_img.get_attribute('src')  # Используем get_attribute вместо getAttribute
-
-            if img_url.startswith('//'):
-                img_url = 'https:' + img_url
-
-            # Проверка на повторное изображение
-            if img_url == prev_img_url:
-                print(f"Пропущено (повторное изображение): {img_url}")
-                break  # Прерываем цикл и переходим к следующему запросу
-
-            prev_img_url = img_url  # Сохраняем текущий URL как предыдущий
-
-            # Получаем данные изображения
-            img_data = requests.get(img_url).content
+            # Нажимаем кнопку для выбора размера изображения
+            sizes_button = WebDriverWait(driver, 6).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.OpenImageButton-SizesButton'))
+            )
+            sizes_button.click()  # Кликаем на кнопку, чтобы открыть размеры
+            
+            # Ждем, пока элемент с ссылкой на изображение станет доступным
+            image_link_element = WebDriverWait(driver, 6).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, 'a.OpenImageButton-ListItem'))
+            )
+            image_url = image_link_element.get_attribute("href")
+           
+            # Получаем данные изображения для проверки размера
+            img_data = requests.get(image_url).content
             img = Image.open(BytesIO(img_data))
             width, height = img.size
 
             # Проверяем размеры изображения
             if width >= 1000 and height >= 1000:
-                print(f"Скачиваем изображение {counter + 1}: {img_url}")
-                headers = {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.121 Safari/537.36',
-                    'Referer': driver.current_url
-                }
-                img_format = img_url.split('.')[-1].split('?')[0]
+                # Скачиваем изображение
+                print(f"Скачиваем изображение: {image_url}")
 
-                if img_format.lower() in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tif', 'tiff', 'webp', 'heif', 'heic', 'raw']:
-                    img_name = f"image_{counter + 1}.{img_format}"
-                    img_path = os.path.join(save_folder, img_name)
-                    with open(img_path, 'wb') as img_file:
-                        img_file.write(img_data)
-                    print(f"Сохранено: {img_name}")
-                    counter += 1
-                    downloaded += 1  # Увеличиваем количество загруженных изображений
-                else:
-                    print(f"Пропущено (неизвестный формат): {img_url}")
+                img_format = image_url.split('.')[-1].split('?')[0]
+                img_name = f"image_{counter + 1}.{img_format}"
+                img_path = os.path.join(save_folder, img_name)
+
+                with open(img_path, 'wb') as img_file:
+                    img_file.write(img_data)
+
+                print(f"Сохранено: {img_name}")
+                counter += 1
+                downloaded += 1  # Увеличиваем количество загруженных изображений
             else:
-                print(f"Пропущено (размер меньше 1000x1000): {img_url}")
+                print(f"Пропущено (размер меньше 1000x1000): {image_url}")
 
             time.sleep(3)
 
         except Exception as e:
-            print(f"Ошибка при поиске полноразмерного изображения: {e}")
+                print(f"Ошибка при поиске или скачивании изображения: {e}")
+
 
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
         time.sleep(3)

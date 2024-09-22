@@ -35,7 +35,7 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
 
-    search_url = f"https://yandex.ru/images/search?text={query}&size=large"
+    search_url = f"https://yandex.ru/images/search?text={query}&size=large&icolor=color"
     driver.get(search_url)
     if counter == 0:
         input("Пройдите капчу и нажмите Enter для продолжения...\n")
@@ -62,13 +62,13 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
 
         try:
             # Нажимаем кнопку для выбора размера изображения
-            sizes_button = WebDriverWait(driver, 6).until(
+            sizes_button = WebDriverWait(driver, 4).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.OpenImageButton-SizesButton'))
             )
             sizes_button.click()  # Кликаем на кнопку, чтобы открыть размеры
             
             # Ждем, пока элемент с ссылкой на изображение станет доступным
-            image_link_element = WebDriverWait(driver, 6).until(
+            image_link_element = WebDriverWait(driver, 4).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'a.OpenImageButton-ListItem'))
             )
             image_url = image_link_element.get_attribute("href")

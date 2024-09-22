@@ -10,6 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from PIL import Image
 from io import BytesIO
+from urllib.parse import quote
+import re
 
 # Путь к веб-драйверу
 driver_path = r'C:\Users\kali\Documents\PhotoFounder\PhotoFounder\driver\chromedriver.exe'
@@ -62,13 +64,13 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
 
         try:
             # Нажимаем кнопку для выбора размера изображения
-            sizes_button = WebDriverWait(driver, 4).until(
+            sizes_button = WebDriverWait(driver, 2).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.OpenImageButton-SizesButton'))
             )
             sizes_button.click()  # Кликаем на кнопку, чтобы открыть размеры
             
             # Ждем, пока элемент с ссылкой на изображение станет доступным
-            image_link_element = WebDriverWait(driver, 4).until(
+            image_link_element = WebDriverWait(driver, 2).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'a.OpenImageButton-ListItem'))
             )
             image_url = image_link_element.get_attribute("href")
@@ -96,14 +98,14 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
             else:
                 print(f"Пропущено (размер меньше 1000x1000): {image_url}")
 
-            time.sleep(3)
+            time.sleep(2)
 
         except Exception as e:
                 print(f"Ошибка при поиске или скачивании изображения: {e}")
 
 
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
-        time.sleep(3)
+        time.sleep(2)
 
     return counter
 
@@ -121,11 +123,12 @@ def close_all_but_first_tab():
 
 def process_file(file_path, save_folder, photos_to_download):
     counter = 0
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
 
     for index, line in enumerate(lines):
-        query = line.strip()[:-2].strip()  # Получаем запрос без пробела и статуса
+        query = re.sub(r'\s+0$', '', line.strip())  # Убираем число 0 и пробелы перед ним
+        query = quote(query)
         status = line.strip()[-1]  # Получаем последний символ, который является 0 или 1
 
         if status == '0':  # Если строка не обработана
@@ -143,7 +146,7 @@ def process_file(file_path, save_folder, photos_to_download):
             close_all_but_first_tab()
 
 # Запуск процесса
-file_path = './quaries/quaries5.txt'
+file_path = './quaries/quaries6.txt'
 save_folder = './workspace_photos/primary_photos'
 photos_to_download = 750  # Указываем количество фотографий для скачивания на один запрос
 process_file(file_path, save_folder, photos_to_download)

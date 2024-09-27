@@ -24,8 +24,8 @@ def rename_files_in_directory(directory, start_index=1):
         print(f"Переименован: {filename} -> {new_name}")
 
 # Укажите путь к вашей папке и начальный индекс
-folder_path = './workspace_photos/filters_photos'
-start_index = 1  # Например, начинаем с 100
+folder_path = './workspace_photos/primary_photos'
+start_index = 12000  # Например, начинаем с 100
 
 # Запуск функции переименования
 rename_files_in_directory(folder_path, start_index)

@@ -1,0 +1,31 @@
+студийный портрет блондинки 1
+студийный портрет брюнетки 1
+студийный портрет рыжей девушки 1
+студийный портрет молодой девушки 1
+Studio portrait girl 1
+Studio portrait female 1
+Studio portrait woman 1
+Studio portrait young woman 1
+Studio portrait beautiful girl 1
+Studio portrait elegant woman face 1
+Studio portrait fashion girl 1
+Studio portrait smiling woman 0
+Studio portrait serious woman 0
+Studio portrait model girl 0
+Studio portrait artistic woman 0
+Studio portrait glamorous girl 0
+Studio portrait natural girl 0
+Studio portrait professional woman 0
+Studio portrait close-up girl 0
+Studio portrait candid woman 0
+Studio portrait casual woman 0
+Studio portrait modern girl 0
+Studio portrait confident woman 0
+Studio portrait expressive girl 0
+Studio portrait dramatic woman 0
+Studio portrait casual girl 0
+Studio portrait thoughtful woman 0
+Studio portrait radiant girl 0
+Studio portrait classic woman 0
+Studio portrait intense girl 0
+Studio portrait young girl 0

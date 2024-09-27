@@ -22,6 +22,8 @@ chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64
 chrome_options.add_argument('--ssl-protocol=any')
 chrome_options.add_argument('--disable-ssl-encryption')
 chrome_options.add_argument('--no-sandbox')
+PROXY = "172.67.181.82:80"
+chrome_options.add_argument('--proxy-server=%s' % PROXY)
 
 
 # Создаем сервис для ChromeDriver
@@ -29,6 +31,9 @@ service = Service(executable_path=driver_path)
 
 # Инициализация веб-драйвера с использованием сервиса и опций
 driver = webdriver.Chrome(service=service, options=chrome_options)
+
+# Откройте сайт для проверки IP
+driver.get('https://whatismyipaddress.com')
 
 prev_img_url = None  # Инициализируем переменную для хранения предыдущего img_url
 
@@ -64,13 +69,13 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
 
         try:
             # Нажимаем кнопку для выбора размера изображения
-            sizes_button = WebDriverWait(driver, 2).until(
+            sizes_button = WebDriverWait(driver, 6).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.OpenImageButton-SizesButton'))
             )
             sizes_button.click()  # Кликаем на кнопку, чтобы открыть размеры
             
             # Ждем, пока элемент с ссылкой на изображение станет доступным
-            image_link_element = WebDriverWait(driver, 2).until(
+            image_link_element = WebDriverWait(driver, 6).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'a.OpenImageButton-ListItem'))
             )
             image_url = image_link_element.get_attribute("href")

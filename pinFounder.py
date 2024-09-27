@@ -43,8 +43,10 @@ try:
 except Exception as e:
     print(f"Ошибка при нажатии на кнопку: {e}")
 
+input("Зайдите в аккаунт и нажмите enter для продолжения...\n")
 # Подождем немного, чтобы страница обновилась
 time.sleep(5)
+
 
 def search_query(query):
     # Ввод текста в поле поиска
@@ -133,11 +135,11 @@ def smooth_scroll_and_download_images(scroll_pause_time=2, scroll_step=300):
         # Ждем, пока страница подгрузит новые изображения
         time.sleep(scroll_pause_time)
         
-        # Проверка изменения высоты страницы
+        # # Проверка изменения высоты страницы
         new_height = driver.execute_script("return document.body.scrollHeight")
-        if new_height == last_height:
-            print("Достигнут конец страницы, больше изображений не подгружается.")
-            break
+        # if new_height == last_height:
+        #     print("Достигнут конец страницы, больше изображений не подгружается.")
+        #     break
         last_height = new_height
 
 downloads_links = []
@@ -154,7 +156,7 @@ def isUniquePhoto(spec_modified_img):
             return False
     return True
 
-search_query("pretty face")
+search_query("студийный портрет молодой девушки HD")
 
 # Создание папки для сохранения фотографий
 save_path = './workspace_photos/primary_photos'

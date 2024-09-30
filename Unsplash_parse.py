@@ -3,6 +3,7 @@ import requests
 
 ACCESS_KEY = 'T-f6wQSdHcXSkGRpT6ochprrKMBwkN0E9Oi18bkcqBc'
 
+# Функция для получения связанных фотографий с Unsplash API
 def fetch_unsplash_related_photos(photo_id):
     url = f'https://api.unsplash.com/photos/{photo_id}/related'
     
@@ -14,25 +15,25 @@ def fetch_unsplash_related_photos(photo_id):
 
     if response.status_code == 200:
         data = response.json()
-        # print(data)  # Выводим данные для отладки
         return data['results']  # Возвращаем только результаты
     else:
         print(f"Error fetching: {response.status_code}")
         return []
 
+# Функция для загрузки фотографии по URL
 def download_photo(photo_url, folder_path, photo_index):
     try:
         response = requests.get(photo_url)
-        response.raise_for_status()  # Raise an error for bad responses
+        response.raise_for_status()  # Вызывает ошибку для некорректных ответов
 
-        # Create the folder if it doesn't exist
+        # Создаем папку, если она не существует
         os.makedirs(folder_path, exist_ok=True)
 
-        # Define the file name and path with the provided index
-        file_name = f"photo_{photo_index}.jpg"  # Изменено на photo_index
+        # Определяем имя и путь к файлу с использованием индекса
+        file_name = f"photo_{photo_index}.jpg"
         file_path = os.path.join(folder_path, file_name)
 
-        # Write the photo to a file
+        # Записываем фото в файл
         with open(file_path, 'wb') as file:
             file.write(response.content)
         
@@ -40,13 +41,15 @@ def download_photo(photo_url, folder_path, photo_index):
     except Exception as e:
         print(f"Failed to download {photo_url}: {e}")
 
-def main(photo_id, folder_path, start_index=1):  # Добавлено начальное значение
+# Основная функция
+def main(photo_id, folder_path, start_index=1):
     photos = fetch_unsplash_related_photos(photo_id)
 
-    if isinstance(photos, list):  # Проверяем, что это список
+    if isinstance(photos, list):  # Проверяем, что получены данные в формате списка
         for index, photo in enumerate(photos):
             if isinstance(photo, dict) and 'urls' in photo:  # Проверяем формат данных
-                photo_url = photo['urls']['regular']  # Получаем URL изображения
+                # Используем 'raw' или 'full' для наивысшего качества
+                photo_url = photo['urls'].get('raw', photo['urls']['full'])
                 download_photo(photo_url, folder_path, start_index + index)  # Используем start_index
             else:
                 print(f"Unexpected data format for photo: {photo}")
@@ -54,4 +57,4 @@ def main(photo_id, folder_path, start_index=1):  # Добавлено начал
         print("No photos found or invalid data format.")
 
 if __name__ == "__main__":
-    main(photo_id='BGMuQUY91w4', folder_path='./workspace_photos/primary_photos', start_index=1)  # Устанавливаем начальный индекс
+    main(photo_id='U4JDjYmjn1g', folder_path='./workspace_photos/primary_photos', start_index=121)  # Устанавливаем начальный индекс

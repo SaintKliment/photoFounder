@@ -22,18 +22,12 @@ chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64
 chrome_options.add_argument('--ssl-protocol=any')
 chrome_options.add_argument('--disable-ssl-encryption')
 chrome_options.add_argument('--no-sandbox')
-PROXY = "172.67.181.82:80"
-chrome_options.add_argument('--proxy-server=%s' % PROXY)
-
 
 # Создаем сервис для ChromeDriver
 service = Service(executable_path=driver_path)
 
 # Инициализация веб-драйвера с использованием сервиса и опций
 driver = webdriver.Chrome(service=service, options=chrome_options)
-
-# Откройте сайт для проверки IP
-driver.get('https://whatismyipaddress.com')
 
 prev_img_url = None  # Инициализируем переменную для хранения предыдущего img_url
 
@@ -103,14 +97,15 @@ def view_images(query, save_folder, counter, additional_pass, photos_to_download
             else:
                 print(f"Пропущено (размер меньше 1000x1000): {image_url}")
 
-            time.sleep(2)
+            time.sleep(3)
 
         except Exception as e:
                 print(f"Ошибка при поиске или скачивании изображения: {e}")
 
 
+        
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.RIGHT)
-        time.sleep(2)
+        time.sleep(3)
 
     return counter
 
@@ -153,5 +148,5 @@ def process_file(file_path, save_folder, photos_to_download):
 # Запуск процесса
 file_path = './quaries/quaries6.txt'
 save_folder = './workspace_photos/primary_photos'
-photos_to_download = 750  # Указываем количество фотографий для скачивания на один запрос
+photos_to_download = 250  # Указываем количество фотографий для скачивания на один запрос
 process_file(file_path, save_folder, photos_to_download)

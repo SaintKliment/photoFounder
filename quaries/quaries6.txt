@@ -9,11 +9,11 @@ Studio portrait young woman 1
 Studio portrait beautiful girl 1
 Studio portrait elegant woman face 1
 Studio portrait fashion girl 1
-Studio portrait smiling woman 0
-Studio portrait serious woman 0
-Studio portrait model girl 0
-Studio portrait artistic woman 0
-Studio portrait glamorous girl 0
+Studio portrait smiling woman 1
+Studio portrait serious woman 1
+Studio portrait model girl 1
+Studio portrait artistic woman 1
+Studio portrait glamorous girl 1
 Studio portrait natural girl 0
 Studio portrait professional woman 0
 Studio portrait close-up girl 0

@@ -95,7 +95,6 @@ def download_image(img_url, save_path, spec_modified_img):
     except Exception as e:
         print(f"Ошибка при скачивании изображения: {e}")
 
-# Пролистывание страницы и скачивание изображений
 # Пролистывание страницы и скачивание изображений с плавным скроллингом
 def smooth_scroll_and_download_images(scroll_pause_time=2, scroll_step=300):
     last_height = driver.execute_script("return document.body.scrollHeight")
